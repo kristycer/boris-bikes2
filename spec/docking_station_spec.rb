@@ -2,20 +2,22 @@ require 'docking_station.rb'
 
 describe DockingStation do
   it { is_expected.to respond_to :release_bike }
-  
+  let(:bike) { double :bike }
+
   it 'releases a working bike' do
-    subject.dock double(:bike)
-    bike = subject.release_bike
-    expect(bike).to be_working
+    allow(bike).to receive(:working?).and_return(true)
+    subject.dock(bike)
+    released_bike = subject.release_bike
+    expect(released_bike).to be_working
   end
   
   it { is_expected.to respond_to :bikes }
 
-  describe '#release_bike' do
-   it "Release a bike" do
-    subject.dock double(:bike)
-    expect(subject.release_bike).to eq bike
-   end
+  # describe '#release_bike' do
+  #  it "Release a bike" do
+  #   subject.dock double(:bike)
+  #   expect(subject.release_bike).to eq bike
+   #end
 
    it { is_expected.to respond_to(:dock).with(1).argument }
 
@@ -24,7 +26,7 @@ describe DockingStation do
     end
   end
 
-  describe '#dock' do
+  describe 'dock' do
     it 'raises an error when full' do
       DockingStation::DEFAULT_CAPACITY.times { subject.dock double :bike}
       expect { subject.dock double(:bike) }. to raise_error 'Docking station full'
@@ -43,4 +45,4 @@ describe DockingStation do
     end 
     
   end
-end
+
